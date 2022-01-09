@@ -28,22 +28,23 @@ function checksCreateTodosUserAvailability(request, response, next) {
   else {
     return response.status(403).json({ error: 'error' });
   }
-  
+
 }
+
 function checksTodoExists(request, response, next) {
   const { username } = request.headers;
   const { id } = request.params;
-  
+
   const user = users.find((user) => user.username === username);
   const validateID = validate(id);
-  
+
   if (!user) {
     return response.status(404).json({ error: 'error' })
   }
   if (!validateID) {
     return response.status(400).json({ error: 'error' })
   }
-  
+
   const todo = user.todos.find((todo) => todo.id === id)
 
   if (!todo) {
@@ -80,6 +81,12 @@ app.post("/users", (request, response) => {
     pro: false,
     todos: [],
   };
+
+  const checkUsername = users.find((user) => user.username === username);
+
+  if (checkUsername) {
+    return response.status(400).json({ error: 'error username already exists' })
+  }
 
   users.push(user);
 
